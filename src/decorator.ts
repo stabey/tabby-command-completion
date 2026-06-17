@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core'
 import { BaseTerminalTabComponent, TerminalDecorator, XTermFrontend } from 'tabby-terminal'
-import { HostAppService } from 'tabby-core'
 import { CompletionPopup } from './completionPopup'
 import { CommandLineTrackerMiddleware } from './lineTracker'
 import { CompletionCandidate, CommandHistoryStore } from './historyStore'
@@ -23,7 +22,6 @@ export class CommandCompletionDecorator extends TerminalDecorator {
 
     constructor (
         private history: CommandHistoryStore,
-        private hostApp: HostAppService,
     ) {
         super()
     }
@@ -59,7 +57,7 @@ export class CommandCompletionDecorator extends TerminalDecorator {
         const tracker = new CommandLineTrackerMiddleware(
             this.history,
             system,
-            () => this.refreshPopup(tab),
+            () => this.onLineChanged(tab),
         )
         tab.session.middleware.unshift(tracker)
         this.trackers.set(tab, {
@@ -137,15 +135,25 @@ export class CommandCompletionDecorator extends TerminalDecorator {
     private handlePopupKey (popup: CompletionPopup, event: KeyboardEvent): boolean {
         switch (event.key) {
             case 'ArrowDown':
-            case 'Tab':
                 popup.selectNext()
                 return true
             case 'ArrowUp':
                 popup.selectPrevious()
                 return true
-            case 'Enter':
-                popup.acceptSelected()
+            case 'Tab':
+                if (this.history.settings.acceptKey === 'tab') {
+                    popup.acceptSelected()
+                } else {
+                    popup.selectNext()
+                }
                 return true
+            case 'Enter':
+                if (this.history.settings.acceptKey === 'enter') {
+                    popup.acceptSelected()
+                    return true
+                }
+                popup.hide()
+                return false
             case 'Escape':
                 popup.hide()
                 return true
@@ -159,12 +167,19 @@ export class CommandCompletionDecorator extends TerminalDecorator {
         popup.show(candidates)
     }
 
-    private refreshPopup (tab: BaseTerminalTabComponent<any>): void {
+    private onLineChanged (tab: BaseTerminalTabComponent<any>): void {
         const popup = this.popups.get(tab)
-        if (!popup?.isVisible()) {
+        const candidates = this.getCandidates(tab)
+        if (popup?.isVisible()) {
+            popup.update(candidates)
             return
         }
-        popup.update(this.getCandidates(tab))
+        if (!this.history.settings.autoShow || this.history.settings.triggerMode !== 'prefix') {
+            return
+        }
+        if (candidates.length) {
+            this.showPopup(tab, candidates)
+        }
     }
 
     private getPopup (tab: BaseTerminalTabComponent<any>): CompletionPopup {
@@ -220,17 +235,18 @@ export class CommandCompletionDecorator extends TerminalDecorator {
     }
 
     private getSystemKey (tab: BaseTerminalTabComponent<any>): string {
+        const profile = tab.profile
         switch (tab.profile.type) {
             case 'local':
-                return `local:${tab.profile.options.shellType ?? this.hostApp.platform}`
+                return `local:${profile.id}:${profile.options.shellType ?? profile.name}`
             case 'ssh':
-                return 'ssh:unix'
+                return `ssh:${profile.options.user ?? ''}@${profile.options.host ?? profile.name}:${profile.options.port ?? 22}`
             case 'telnet':
-                return 'telnet:remote'
+                return `telnet:${profile.options.host ?? profile.name}:${profile.options.port ?? 23}`
             case 'serial':
-                return 'serial:remote'
+                return `serial:${profile.options.port ?? profile.id}`
             default:
-                return tab.profile.type
+                return `${profile.type}:${profile.id}`
         }
     }
 }

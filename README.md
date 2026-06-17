@@ -23,11 +23,12 @@ This repository follows that standalone plugin shape.
 Implemented:
 
 - command history capture through Tabby's `SessionMiddleware`;
-- per-system history grouping, for example `local:unix` and `ssh:unix`;
+- per-server history grouping, for example `ssh:user@host:22`;
+- automatic prefix suggestions while typing;
 - completion popup for xterm-based Tabby terminals;
 - `Ctrl+R` for history search;
 - `!` at the beginning of a line for history-only completion;
-- candidate navigation with `Tab`, arrow keys, `Enter`, and `Escape`;
+- candidate navigation with arrow keys, `Tab` to accept by default, `Enter` to run the current line, and `Escape` to close;
 - conservative history storage rules that skip empty commands, leading-space commands, and control characters.
 
 Planned:

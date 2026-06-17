@@ -61,9 +61,16 @@ export class CommandHistoryStore {
         return this.state.enabled
     }
 
+    get settings (): CommandCompletionConfig {
+        return this.state
+    }
+
     private get state (): CommandCompletionConfig {
         const root = this.config.store.commandCompletion ??= {}
         root.enabled ??= true
+        root.autoShow ??= true
+        root.triggerMode ??= 'prefix'
+        root.acceptKey ??= 'tab'
         root.maxHistoryItems ??= 10000
         root.maxSuggestions ??= 8
         root.minPrefixLength ??= 1

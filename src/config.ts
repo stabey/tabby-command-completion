@@ -9,6 +9,9 @@ export interface CommandCompletionHistoryItem {
 
 export interface CommandCompletionConfig {
     enabled: boolean
+    autoShow: boolean
+    triggerMode: 'prefix'|'manual'
+    acceptKey: 'tab'|'enter'
     maxHistoryItems: number
     maxSuggestions: number
     minPrefixLength: number
@@ -20,6 +23,9 @@ export class CommandCompletionConfigProvider extends ConfigProvider {
     defaults = {
         commandCompletion: {
             enabled: true,
+            autoShow: true,
+            triggerMode: 'prefix',
+            acceptKey: 'tab',
             maxHistoryItems: 10000,
             maxSuggestions: 8,
             minPrefixLength: 1,
