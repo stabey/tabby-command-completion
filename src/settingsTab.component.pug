@@ -1,0 +1,67 @@
+h3 Command completion
+
+.form-line
+    .header
+        .title Enable command completion
+        .description Collect local command history and show suggestions in terminal tabs.
+    .content
+        input(type='checkbox', [(ngModel)]='options.enabled', (ngModelChange)='save()')
+
+.form-line
+    .header
+        .title Trigger mode
+        .description Automatic mode opens suggestions while typing. Manual mode keeps Ctrl+R and ! history search.
+    .content
+        select.form-control([(ngModel)]='options.triggerMode', (ngModelChange)='save()')
+            option(*ngFor='let mode of triggerModes', [ngValue]='mode.value') {{mode.name}}
+
+.form-line
+    .header
+        .title Automatic popup
+        .description Show matching history candidates as soon as the typed prefix is long enough.
+    .content
+        input(type='checkbox', [(ngModel)]='options.autoShow', (ngModelChange)='save()')
+
+.form-line
+    .header
+        .title Accept key
+        .description Key used to insert the selected suggestion without running it.
+    .content
+        select.form-control([(ngModel)]='options.acceptKey', (ngModelChange)='save()')
+            option(*ngFor='let key of acceptKeys', [ngValue]='key.value') {{key.name}}
+
+.form-line
+    .header
+        .title Minimum prefix length
+        .description Number of typed characters before automatic suggestions appear.
+    .content
+        input.form-control(type='number', min='1', max='20', [(ngModel)]='options.minPrefixLength', (ngModelChange)='save()')
+
+.form-line
+    .header
+        .title Maximum suggestions
+        .description Number of candidates shown in the popup.
+    .content
+        input.form-control(type='number', min='1', max='50', [(ngModel)]='options.maxSuggestions', (ngModelChange)='save()')
+
+.form-line
+    .header
+        .title Maximum history items
+        .description Commands kept in local history.
+    .content
+        input.form-control(type='number', min='100', max='100000', step='100', [(ngModel)]='options.maxHistoryItems', (ngModelChange)='save()')
+
+.form-line
+    .header
+        .title Share history across systems
+        .description When disabled, SSH history is grouped by user, host and port.
+    .content
+        input(type='checkbox', [(ngModel)]='options.shareAcrossSystems', (ngModelChange)='save()')
+
+.form-line
+    .header
+        .title Stored commands
+        .description Current local command history size.
+    .content
+        span {{options.history.length}}
+        button.btn.btn-secondary.ml-3(type='button', (click)='clearHistory()') Clear history

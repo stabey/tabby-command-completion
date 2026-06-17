@@ -26,6 +26,10 @@ module.exports = {
           configFile: path.resolve(__dirname, 'tsconfig.json'),
         },
       },
+      {
+        test: /\.pug$/,
+        use: ['apply-loader', 'pug-loader'],
+      },
     ],
   },
   externals: [

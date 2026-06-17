@@ -26,6 +26,7 @@ Implemented:
 - per-server history grouping, for example `ssh:user@host:22`;
 - automatic prefix suggestions while typing;
 - completion popup for xterm-based Tabby terminals;
+- settings tab under Tabby's Settings window;
 - `Ctrl+R` for history search;
 - `!` at the beginning of a line for history-only completion;
 - candidate navigation with arrow keys, `Tab` to accept by default, `Enter` to run the current line, and `Escape` to close;
@@ -68,8 +69,23 @@ The plugin is split into small pieces:
 - `CommandLineTrackerMiddleware` observes terminal input and maintains a best-effort current command line.
 - `CommandHistoryStore` stores and ranks history candidates.
 - `CompletionPopup` renders the suggestion UI near the terminal cursor.
+- `CommandCompletionSettingsTabComponent` exposes user-facing settings.
 
 The next major internal API should be a `CompletionProvider` interface so history, templates, static rules, and probes can be developed independently.
+
+## Settings
+
+After installing the plugin, Tabby shows a `Command completion` page in Settings.
+
+Available options:
+
+- enable or disable command completion;
+- switch between automatic prefix suggestions and manual shortcuts only;
+- enable or disable the automatic popup;
+- choose whether `Tab` or `Enter` accepts the selected candidate;
+- set minimum prefix length, maximum suggestions, and maximum stored history items;
+- choose whether history is shared across systems or grouped per SSH user, host, and port;
+- clear local command history.
 
 ## Safety Model
 

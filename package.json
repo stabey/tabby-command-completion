@@ -36,6 +36,7 @@
     "@angular/platform-browser": "^15",
     "rxjs": "^7",
     "tabby-core": "*",
+    "tabby-settings": "*",
     "tabby-terminal": "*"
   },
   "devDependencies": {
@@ -46,8 +47,12 @@
     "@angular/platform-browser": "^15.2.10",
     "@types/node": "^20.19.0",
     "@types/webpack-env": "^1.18.8",
+    "apply-loader": "^2.0.0",
+    "pug": "^2.0.4",
+    "pug-loader": "^2.4.0",
     "rxjs": "^7.8.2",
     "tabby-core": "^1.0.231-nightly.0",
+    "tabby-settings": "^1.0.231-nightly.0",
     "tabby-terminal": "^1.0.231-nightly.0",
     "ts-loader": "^9.5.4",
     "typescript": "^4.9.5",
